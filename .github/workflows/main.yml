@@ -1,0 +1,30 @@
+name: Build XMRig (Linux)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout source
+      uses: actions/checkout@v3
+
+    - name: Install dependencies
+      run: |
+        sudo apt update
+        sudo apt install -y cmake build-essential libuv1-dev libssl-dev libhwloc-dev
+
+    - name: Build XMRig
+      run: |
+        mkdir build
+        cd build
+        cmake ..
+        make -j$(nproc)
+
+    - name: Upload miner binary
+      uses: actions/upload-artifact@v4
+      with:
+        name: xmrig-linux
+        path: build/xmrig
